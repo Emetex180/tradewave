@@ -86,6 +86,81 @@
             margin-bottom: 1rem;
         }
 
+        /* Bank Transfer Styles */
+        .bank-transfer-section {
+            background: rgba(1, 7, 17, 0.8);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(20, 203, 244, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .bank-transfer-title {
+            color: var(--light-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bank-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bank-input {
+            flex: 1;
+            background: rgba(12, 44, 71, 0.5);
+            border: 2px solid rgba(20, 203, 244, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--light-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .bank-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(20, 203, 244, 0.1);
+            background: rgba(12, 44, 71, 0.7);
+            outline: none;
+        }
+
+        .bank-input::placeholder {
+            color: rgba(238, 239, 240, 0.6);
+        }
+
+        .transfer-now-btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: var(--light-color);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .transfer-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(20, 203, 244, 0.3);
+        }
+
+        .transfer-now-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Rest of your existing styles remain the same */
         .dashboard-header {
             background: var(--gradient-dark);
@@ -269,7 +344,7 @@
             flex-wrap: wrap;
         }
 
-        .transfer-btn, .withdraw-btn, .self-transfer-btn {
+        .transfer-btn {
             border: none;
             border-radius: 16px;
             padding: 1.25rem 2rem;
@@ -284,24 +359,11 @@
             overflow: hidden;
             min-width: 200px;
             justify-content: center;
-        }
-
-        .transfer-btn {
             background: var(--gradient-primary);
             box-shadow: 0 8px 32px rgba(20, 203, 244, 0.3);
         }
 
-        .withdraw-btn {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
-        }
-
-        .self-transfer-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 8px 32px rgba(28, 119, 162, 0.3);
-        }
-
-        .transfer-btn::before, .withdraw-btn::before, .self-transfer-btn::before {
+        .transfer-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -312,24 +374,13 @@
             transition: left 0.6s;
         }
 
-        .transfer-btn:hover::before, .withdraw-btn:hover::before, .self-transfer-btn:hover::before {
+        .transfer-btn:hover::before {
             left: 100%;
         }
 
-        .transfer-btn:hover, .withdraw-btn:hover, .self-transfer-btn:hover {
-            transform: translateY(-3px);
-        }
-
         .transfer-btn:hover {
+            transform: translateY(-3px);
             box-shadow: 0 12px 40px rgba(20, 203, 244, 0.4);
-        }
-
-        .withdraw-btn:hover {
-            box-shadow: 0 12px 40px rgba(239, 68, 68, 0.4);
-        }
-
-        .self-transfer-btn:hover {
-            box-shadow: 0 12px 40px rgba(28, 119, 162, 0.4);
         }
 
         .account-details-card {
@@ -964,7 +1015,7 @@
                 flex-direction: column;
             }
             
-            .transfer-btn, .withdraw-btn, .self-transfer-btn {
+            .transfer-btn {
                 min-width: auto;
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
@@ -996,6 +1047,10 @@
                 width: 50px;
                 height: 60px;
                 font-size: 1.25rem;
+            }
+
+            .bank-input-group {
+                flex-direction: column;
             }
         }
 
@@ -1104,15 +1159,29 @@
                                         <div class="action-buttons">
                                             <button class="transfer-btn" data-bs-toggle="modal" data-bs-target="#transferModal">
                                                 <i class="fas fa-paper-plane"></i>
-                                                Transfer
-                                            </button>
-                                            <button class="self-transfer-btn" onclick="window.location.href='transfer.html'">
-                                                <i class="fas fa-exchange-alt"></i>
-                                                Bank Transfer
+                                                Transfer Money
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Bank Transfer Section -->
+                            <div class="bank-transfer-section">
+                                <div class="bank-transfer-title">
+                                    <i class="fas fa-university"></i>
+                                    Bank Transfer
+                                </div>
+                                <div class="bank-input-group">
+                                    <input type="text" class="bank-input" id="bankAccountNumber" 
+                                           placeholder="Enter account number" maxlength="20">
+                                    <input type="number" class="bank-input" id="bankAmount" 
+                                           placeholder="Amount" min="0.01" step="0.01">
+                                </div>
+                                <button class="transfer-now-btn" onclick="processBankTransfer()">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Transfer Now
+                                </button>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -1363,7 +1432,7 @@
                 <div class="active-indicator"></div>
             </a>
 
-            <a href="transfer.html" class="nav-item" onclick="setActive(this)">
+            <a href="#" class="nav-item" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="setActive(this)">
                 <div class="nav-icon">
                     <i class="fas fa-exchange-alt"></i>
                 </div>
@@ -1479,7 +1548,7 @@
         function displayTransactions(transactions) {
             const container = document.getElementById('transactionsList');
             
-            if (transactions.length === 0) {
+            if (!transactions || transactions.length === 0) {
                 container.innerHTML = `
                     <div class="no-transactions">
                         <i class="fas fa-receipt"></i>
@@ -1491,22 +1560,21 @@
             }
 
             container.innerHTML = transactions.map(transaction => {
-                // FIXED: Only show +/- for the current transaction, not affecting all history
-                const isCurrentUserSender = transaction.sender_id === userData.id;
-                const isCurrentUserReceiver = transaction.receiver_id === userData.id;
+                // FIXED: Proper transaction display logic
+                const isSender = transaction.sender_id === userData.id;
+                const isReceiver = transaction.receiver_id === userData.id;
                 
                 let transactionType, amountDisplay, amountClass;
                 
-                if (isCurrentUserSender) {
-                    transactionType = `<i class="fas fa-arrow-up text-danger"></i>Sent to ${transaction.receiver_name}`;
+                if (isSender) {
+                    transactionType = `<i class="fas fa-arrow-up text-danger"></i>Sent to ${transaction.receiver_name || 'Unknown'}`;
                     amountDisplay = `-${transaction.amount.toFixed(2)} ${transaction.currency}`;
                     amountClass = 'amount-sent';
-                } else if (isCurrentUserReceiver) {
-                    transactionType = `<i class="fas fa-arrow-down text-success"></i>Received from ${transaction.sender_name}`;
+                } else if (isReceiver) {
+                    transactionType = `<i class="fas fa-arrow-down text-success"></i>Received from ${transaction.sender_name || 'Unknown'}`;
                     amountDisplay = `+${transaction.amount.toFixed(2)} ${transaction.currency}`;
                     amountClass = 'amount-received';
                 } else {
-                    // This shouldn't happen, but just in case
                     transactionType = `<i class="fas fa-exchange-alt text-warning"></i>Transaction`;
                     amountDisplay = `${transaction.amount.toFixed(2)} ${transaction.currency}`;
                     amountClass = '';
@@ -1526,8 +1594,8 @@
                         <span class="transaction-amount ${amountClass}">
                             ${amountDisplay}
                         </span>
-                        <span class="status-badge status-${transaction.status.toLowerCase()}">
-                            ${transaction.status}
+                        <span class="status-badge status-${(transaction.status || 'completed').toLowerCase()}">
+                            ${transaction.status || 'Completed'}
                         </span>
                     </div>
                 </div>
@@ -1545,6 +1613,102 @@
             } catch (error) {
                 console.error('Logout failed:', error);
                 window.location.href = 'login.html';
+            }
+        }
+
+        // Bank Transfer Function
+        async function processBankTransfer() {
+            const accountNumber = document.getElementById('bankAccountNumber').value.trim();
+            const amount = document.getElementById('bankAmount').value;
+            const transferBtn = document.querySelector('.transfer-now-btn');
+            
+            if (!accountNumber) {
+                alert('Please enter account number');
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (parseFloat(amount) > userData.balance) {
+                alert('Insufficient balance');
+                return;
+            }
+
+            const originalText = transferBtn.innerHTML;
+            transferBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            transferBtn.disabled = true;
+
+            try {
+                // First search for the account
+                const searchResponse = await fetch(`${API_BASE_URL}/search_accounts?q=${encodeURIComponent(accountNumber)}`, {
+                    credentials: 'include'
+                });
+                
+                const accounts = await searchResponse.json();
+                let receiverId = null;
+                
+                if (accounts && accounts.length > 0) {
+                    // Account found in system
+                    const account = accounts[0];
+                    receiverId = account.id;
+                    
+                    // Show PIN modal for confirmation
+                    const pin = prompt('Please enter your 4-digit PIN to confirm transfer:');
+                    if (!pin || pin.length !== 4) {
+                        alert('Invalid PIN. Transfer cancelled.');
+                        transferBtn.innerHTML = originalText;
+                        transferBtn.disabled = false;
+                        return;
+                    }
+
+                    // Process the transfer
+                    const transferResponse = await fetch(`${API_BASE_URL}/make_transaction`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            receiver_id: receiverId,
+                            amount: parseFloat(amount),
+                            pin: pin
+                        })
+                    });
+
+                    const result = await transferResponse.json();
+                    
+                    if (result.success) {
+                        alert('Transfer completed successfully!');
+                        // Clear form
+                        document.getElementById('bankAccountNumber').value = '';
+                        document.getElementById('bankAmount').value = '';
+                        // Reload data
+                        await loadUserData();
+                        await loadTransactions();
+                    } else {
+                        throw new Error(result.message || 'Transfer failed');
+                    }
+                } else {
+                    // Account not found - show support option
+                    const needSupport = confirm(`Account number ${accountNumber} not found in our system.\n\nWould you like to contact support for assistance?`);
+                    if (needSupport) {
+                        const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                        supportModal.show();
+                    }
+                }
+            } catch (error) {
+                console.error('Bank transfer error:', error);
+                const needSupport = confirm(`Transfer failed: ${error.message}\n\nWould you like to contact support?`);
+                if (needSupport) {
+                    const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                    supportModal.show();
+                }
+            } finally {
+                transferBtn.innerHTML = originalText;
+                transferBtn.disabled = false;
             }
         }
 
@@ -1764,7 +1928,7 @@
             document.getElementById('pin').value = pin;
         }
 
-        // Process transfer - FIXED with better error handling
+        // Process transfer
         async function processTransfer() {
             const pin = document.getElementById('pin').value;
             
