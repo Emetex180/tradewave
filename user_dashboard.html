@@ -2066,6 +2066,284 @@
         document.getElementById('recipient-info').style.display = 'none';
         clearPin();
     });
+// Display transactions - KEEP RECEIPT BUTTON BUT REMOVE IT FROM VISUAL DISPLAY
+function displayTransactions(transactions) {
+    const container = document.getElementById('transactionsList');
+    
+    if (!transactions || transactions.length === 0) {
+        container.innerHTML = `
+            <div class="no-transactions">
+                <i class="fas fa-receipt"></i>
+                <h4>No transactions yet</h4>
+                <p>Your transaction history will appear here</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = transactions.map(transaction => {
+        const isSender = transaction.sender_id === userData.id;
+        const isReceiver = transaction.receiver_id === userData.id;
+        
+        let transactionType, amountDisplay, amountClass;
+        
+        if (isSender) {
+            transactionType = `<i class="fas fa-arrow-up text-danger"></i>Sent to ${transaction.receiver_name || 'Unknown'}`;
+            amountDisplay = `-${parseFloat(transaction.amount || 0).toFixed(2)} ${transaction.currency || 'USD'}`;
+            amountClass = 'amount-sent';
+        } else if (isReceiver) {
+            transactionType = `<i class="fas fa-arrow-down text-success"></i>Received from ${transaction.sender_name || 'Unknown'}`;
+            amountDisplay = `+${parseFloat(transaction.amount || 0).toFixed(2)} ${transaction.currency || 'USD'}`;
+            amountClass = 'amount-received';
+        } else {
+            transactionType = `<i class="fas fa-exchange-alt text-warning"></i>Transaction`;
+            amountDisplay = `${parseFloat(transaction.amount || 0).toFixed(2)} ${transaction.currency || 'USD'}`;
+            amountClass = '';
+        }
+
+        // Get transaction ID - try multiple possible fields
+        const transactionId = transaction.id || transaction.transaction_id;
+        
+        if (!transactionId) {
+            console.warn('Transaction missing ID:', transaction);
+            return ''; // Skip transactions without IDs
+        }
+
+        return `
+        <div class="transaction-item">
+            <div class="transaction-info">
+                <div class="transaction-type">
+                    ${transactionType}
+                </div>
+                <div class="transaction-date">
+                    ${new Date(transaction.created_at).toLocaleString()}
+                </div>
+            </div>
+            <div class="transaction-details">
+                <span class="transaction-amount ${amountClass}">
+                    ${amountDisplay}
+                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="status-badge status-${(transaction.status || 'completed').toLowerCase()}">
+                        ${transaction.status || 'Completed'}
+                    </span>
+                    <!-- RECEIPT BUTTON ADDED BACK BUT HIDDEN -->
+                    <button class="receipt-btn" onclick="viewReceipt('${transactionId}')" style="display: none;">
+                        <i class="fas fa-receipt"></i>
+                        Receipt
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+// View receipt function - ADD THIS BACK
+function viewReceipt(transactionId) {
+    if (!transactionId) {
+        alert('Transaction ID not available');
+        return;
+    }
+    
+    console.log('Viewing receipt for transaction:', transactionId);
+    
+    // Store in session storage as backup
+    sessionStorage.setItem('lastTransactionId', transactionId);
+    
+    // Navigate to receipt page
+    window.location.href = `receipt.html?id=${transactionId}`;
+}
+
+// Bank Transfer Function - ADD RECEIPT OPTION BACK
+async function processBankTransfer() {
+    const accountNumber = document.getElementById('bankAccountNumber').value.trim();
+    const amount = document.getElementById('bankAmount').value;
+    const transferBtn = document.querySelector('.transfer-now-btn');
+    
+    if (!accountNumber) {
+        alert('Please enter account number');
+        return;
+    }
+    
+    if (!amount || amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+    }
+    
+    if (parseFloat(amount) > (userData.balance || 0)) {
+        alert('Insufficient balance');
+        return;
+    }
+
+    const originalText = transferBtn.innerHTML;
+    transferBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    transferBtn.disabled = true;
+
+    try {
+        // First search for the account
+        const searchResponse = await fetch(`${API_BASE_URL}/search_accounts?q=${encodeURIComponent(accountNumber)}`, {
+            credentials: 'include'
+        });
+        
+        if (!searchResponse.ok) {
+            throw new Error('Failed to search accounts');
+        }
+        
+        const accounts = await searchResponse.json();
+        let receiverId = null;
+        
+        if (accounts && accounts.length > 0) {
+            // Account found in system
+            const account = accounts[0];
+            receiverId = account.id;
+            
+            // Show PIN modal for confirmation
+            const pin = prompt('Please enter your 4-digit PIN to confirm transfer:');
+            if (!pin || pin.length !== 4) {
+                alert('Invalid PIN. Transfer cancelled.');
+                transferBtn.innerHTML = originalText;
+                transferBtn.disabled = false;
+                return;
+            }
+
+            // Process the transfer
+            const transferResponse = await fetch(`${API_BASE_URL}/make_transaction`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    receiver_id: receiverId,
+                    amount: parseFloat(amount),
+                    pin: pin
+                })
+            });
+
+            const result = await transferResponse.json();
+            
+            if (result.success) {
+                alert('Transfer completed successfully!');
+                // Clear form
+                document.getElementById('bankAccountNumber').value = '';
+                document.getElementById('bankAmount').value = '';
+                // Reload data
+                await loadUserData();
+                await loadTransactions();
+                
+                // Get transaction ID from response - try multiple possible fields
+                const transactionId = result.transaction_id || result.id || result.transaction?.id;
+                
+                if (transactionId) {
+                    // Offer to view receipt
+                    const viewReceipt = confirm('Would you like to view the receipt?');
+                    if (viewReceipt) {
+                        window.location.href = `receipt.html?id=${transactionId}`;
+                    }
+                }
+            } else {
+                throw new Error(result.message || 'Transfer failed');
+            }
+        } else {
+            // Account not found - show support option
+            const needSupport = confirm(`Account number ${accountNumber} not found in our system.\n\nWould you like to contact support for assistance?`);
+            if (needSupport) {
+                const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                supportModal.show();
+            }
+        }
+    } catch (error) {
+        console.error('Bank transfer error:', error);
+        const needSupport = confirm(`Transfer failed: ${error.message}\n\nWould you like to contact support?`);
+        if (needSupport) {
+            const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+            supportModal.show();
+        }
+    } finally {
+        transferBtn.innerHTML = originalText;
+        transferBtn.disabled = false;
+    }
+}
+
+// Process transfer - ADD RECEIPT OPTION BACK
+async function processTransfer() {
+    const pin = document.getElementById('pin').value;
+    
+    if (pin.length !== 4) {
+        alert('Please enter your 4-digit PIN');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('next-btn');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/make_transaction`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+                },
+            credentials: 'include',
+            body: JSON.stringify({
+                receiver_id: transferData.receiver_id,
+                amount: parseFloat(transferData.amount),
+                pin: pin
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
+            modal.hide();
+            
+            // Reload user data and transactions
+            await loadUserData();
+            await loadTransactions();
+            
+            // Get transaction ID from response - try multiple possible fields
+            const transactionId = data.transaction_id || data.id || data.transaction?.id;
+            
+            if (transactionId) {
+                // Show success message with receipt option
+                const success = confirm('Transfer completed successfully! Would you like to view the receipt?');
+                if (success) {
+                    window.location.href = `receipt.html?id=${transactionId}`;
+                }
+            } else {
+                alert('Transfer completed successfully!');
+            }
+        } else {
+            // Show appropriate error message with support option
+            if (data.message.includes('not found') || data.message.includes('Invalid') || data.message.includes('recipient')) {
+                const needSupport = confirm(`Error: ${data.message}\n\nWould you like to contact support for assistance?`);
+                if (needSupport) {
+                    const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                    supportModal.show();
+                }
+            } else {
+                alert('Error: ' + data.message);
+            }
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Transfer error:', error);
+        const needSupport = confirm('Network error processing transaction. Would you like to contact support?');
+        if (needSupport) {
+            const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+            supportModal.show();
+        }
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+}
 </script>
 </body>
 </html>
