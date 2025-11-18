@@ -269,8 +269,9 @@
             color: var(--light-color);
         }
         
+        /* FIXED: White placeholder text */
         .form-control::placeholder {
-            color: rgba(238, 239, 240, 0.6);
+            color: rgba(255, 255, 255, 0.7) !important;
         }
         
         .form-control:focus {
@@ -784,8 +785,8 @@
     </div>
 
     <script>
-        // Configuration - UPDATED WITH CORRECT URL
-        const API_BASE_URL = 'https://SCBanking.pythonanywhere.com/api';
+        // FIXED: Use the correct PythonAnywhere URL
+        const API_BASE_URL = 'https://scbanking.pythonanywhere.com/api';
 
         // Generate floating particles
         function createParticles() {
@@ -901,12 +902,14 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                     },
                     credentials: 'include', // CRITICAL for cross-domain sessions
                     body: JSON.stringify({ username, password })
                 });
                 
                 console.log('📡 Response status:', response.status);
+                console.log('🍪 Response cookies:', response.headers.get('set-cookie'));
                 
                 const data = await response.json();
                 console.log('📦 Response data:', data);
