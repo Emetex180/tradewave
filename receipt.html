@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Receipt - Standard Chartered</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0d73e8;
+            --accent-green: #39d202;
+            --dark-blue: #0a5bbf;
+            --light-blue: #e8f2ff;
+            --white: #ffffff;
+            --gray-light: #f8fafc;
+            --gray-medium: #64748b;
+            --gray-dark: #334155;
+        }
+        
+        .receipt-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #f0f7ff 100%);
+            padding: 2rem 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .receipt-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(13, 115, 232, 0.15);
+            animation: slideInUp 0.6s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)) !important;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .receipt-section {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .receipt-section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: var(--dark-blue);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+        }
+        
+        .info-item:not(:last-child) {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .label {
+            font-weight: 600;
+            color: var(--gray-medium);
+        }
+        
+        .value {
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+        
+        .party-card {
+            background: var(--gray-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        
+        .party-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .party-info strong {
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .party-info div:not(:last-child) {
+            margin-bottom: 0.25rem;
+        }
+        
+        .currency-badge {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .amount-display {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--light-blue), #f0f7ff);
+            border-radius: 16px;
+            border: 2px dashed var(--primary-blue);
+        }
+        
+        .amount-label {
+            color: var(--gray-medium);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .amount-value {
+            color: var(--dark-blue);
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .exchange-info {
+            padding: 0.5rem;
+            background: rgba(57, 210, 2, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(57, 210, 2, 0.2);
+        }
+        
+        .security-info {
+            padding: 1rem;
+            background: rgba(57, 210, 2, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(57, 210, 2, 0.1);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 115, 232, 0.3);
+        }
+        
+        .footer-note {
+            color: var(--gray-medium);
+        }
+        
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .btn, .actions, .footer-note {
+                display: none !important;
+            }
+            
+            .receipt-card {
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+            }
+            
+            .receipt-container {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .card-header {
+                background: var(--primary-blue) !important;
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .receipt-container {
+                padding: 1rem 0;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .amount-value {
+                font-size: 2rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Flash Messages */
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages Container -->
+    <div class="flash-container" id="flashContainer"></div>
+
+    <div class="receipt-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-lg receipt-card">
+                        <div class="card-header bg-primary text-white text-center py-4">
+                            <i class="fas fa-university fa-2x mb-3"></i>
+                            <h2 class="mb-0">Standard Chartered Bank</h2>
+                            <p class="mb-0">Transaction Receipt</p>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <!-- Transaction Info -->
+                            <div class="receipt-section mb-4">
+                                <h5 class="section-title">Transaction Details</h5>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="label">Transaction ID:</span>
+                                        <span class="value" id="transaction-id">Loading...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">Date & Time:</span>
+                                        <span class="value" id="transaction-date">Loading...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">Status:</span>
+                                        <span class="value badge bg-success" id="transaction-status">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Parties Info -->
+                            <div class="receipt-section mb-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="party-card">
+                                            <h6 class="party-title">Sender</h6>
+                                            <div class="party-info">
+                                                <strong id="sender-name">Loading...</strong>
+                                                <div id="sender-account">Loading...</div>
+                                                <div id="sender-bank">Loading...</div>
+                                                <div class="currency-badge" id="sender-currency">Loading...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="party-card">
+                                            <h6 class="party-title">Recipient</h6>
+                                            <div class="party-info">
+                                                <strong id="receiver-name">Loading...</strong>
+                                                <div id="receiver-account">Loading...</div>
+                                                <div id="receiver-bank">Loading...</div>
+                                                <div class="currency-badge" id="receiver-currency">Loading...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amount Info -->
+                            <div class="receipt-section mb-4">
+                                <div class="amount-display text-center">
+                                    <div class="amount-label">Amount Transferred</div>
+                                    <div class="amount-value" id="amount-value">Loading...</div>
+                                    <div class="exchange-info mt-2" id="exchange-info" style="display: none;">
+                                        <small class="text-muted">
+                                            Currency conversion: <span id="from-currency"></span> → <span id="to-currency"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Info -->
+                            <div class="receipt-section">
+                                <div class="security-info text-center">
+                                    <i class="fas fa-shield-alt text-success me-2"></i>
+                                    <small class="text-muted">
+                                        This transaction is secured with 256-bit encryption
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer text-center py-3">
+                            <div class="actions">
+                                <button onclick="window.print()" class="btn btn-primary me-2">
+                                    <i class="fas fa-print me-2"></i>Print Receipt
+                                </button>
+                                <button onclick="goToDashboard()" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                </button>
+                            </div>
+                            <div class="footer-note mt-3">
+                                <small class="text-muted">
+                                    Thank you for banking with Standard Chartered
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - UPDATE THIS WITH YOUR PYTHONANYWHERE URL
+        // Configuration - UPDATED WITH CORRECT URL
+        const API_BASE_URL = 'https://SCBanking.pythonanywhere.com/api';
+
+        // Get transaction ID from URL
+        function getTransactionIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('transaction_id');
+        }
+
+        // Show flash message
+        function showFlashMessage(message, type = 'success') {
+            const flashContainer = document.getElementById('flashContainer');
+            const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+            const iconClass = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                <i class="fas ${iconClass} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            flashContainer.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Load transaction data
+        async function loadTransactionData() {
+            const transactionId = getTransactionIdFromUrl();
+            
+            if (!transactionId) {
+                showFlashMessage('No transaction ID provided', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/transaction_receipt/${transactionId}`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayTransactionData(data.receipt);
+                } else {
+                    showFlashMessage(data.message || 'Failed to load transaction', 'error');
+                    // Redirect to dashboard if not authorized
+                    if (data.message === 'Not authorized') {
+                        setTimeout(() => {
+                            goToDashboard();
+                        }, 2000);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading transaction:', error);
+                showFlashMessage('Network error. Please try again.', 'error');
+            }
+        }
+
+        // Display transaction data
+        function displayTransactionData(receipt) {
+            document.getElementById('transaction-id').textContent = receipt.transaction_id;
+            document.getElementById('transaction-date').textContent = formatDate(receipt.created_at);
+            document.getElementById('transaction-status').textContent = receipt.status;
+            
+            document.getElementById('sender-name').textContent = receipt.sender_name;
+            document.getElementById('sender-account').textContent = receipt.sender_account;
+            document.getElementById('sender-bank').textContent = 'Standard Chartered'; // Default bank
+            document.getElementById('sender-currency').textContent = receipt.currency;
+            
+            document.getElementById('receiver-name').textContent = receipt.receiver_name;
+            document.getElementById('receiver-account').textContent = receipt.receiver_account;
+            document.getElementById('receiver-bank').textContent = 'Standard Chartered'; // Default bank
+            document.getElementById('receiver-currency').textContent = receipt.currency;
+            
+            document.getElementById('amount-value').textContent = 
+                `${parseFloat(receipt.amount).toFixed(2)} ${receipt.currency}`;
+            
+            // Show exchange info if currencies are different
+            if (receipt.sender_currency !== receipt.receiver_currency) {
+                document.getElementById('exchange-info').style.display = 'block';
+                document.getElementById('from-currency').textContent = receipt.sender_currency;
+                document.getElementById('to-currency').textContent = receipt.receiver_currency;
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // Navigate to dashboard
+        function goToDashboard() {
+            // Check if user is admin or regular user
+            const userType = localStorage.getItem('userType'); // You'll need to set this on login
+            if (userType === 'admin') {
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                window.location.href = 'user_dashboard.html';
+            }
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/check_auth`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    showFlashMessage('Please login to view receipt', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    // Store user type for navigation
+                    localStorage.setItem('userType', data.user.is_admin ? 'admin' : 'user');
+                    loadTransactionData();
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                showFlashMessage('Please login to view receipt', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
