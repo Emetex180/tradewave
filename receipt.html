@@ -359,10 +359,55 @@
             font-size: 3rem;
             color: var(--gray-medium);
         }
+
+        /* Loading and Error States */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-blue);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .error-state i {
+            font-size: 4rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
         
         /* Print Styles */
         @media print {
-            .btn, .actions, .footer-note {
+            .btn, .actions, .footer-note, .loading-overlay, .error-state {
                 display: none !important;
             }
             
@@ -457,140 +502,165 @@
                         <!-- Watermark -->
                         <div class="watermark">TRADEWAVEE</div>
                         
-                        <div class="card-header bg-primary text-white text-center py-4">
-                            <div class="company-brand">
-                                <div class="company-logo">
-                                    <i class="fas fa-wave-square"></i>
-                                </div>
-                                <div>
-                                    <h1 class="company-name">TradeWavee</h1>
-                                    <p class="company-tagline">Secure Digital Banking</p>
-                                </div>
-                            </div>
-                            <h3 class="mt-3 mb-0">Transaction Receipt</h3>
+                        <!-- Loading Overlay -->
+                        <div id="loadingOverlay" class="loading-overlay">
+                            <div class="loading-spinner"></div>
+                            <h4>Loading Receipt...</h4>
+                            <p class="text-muted">Please wait while we fetch your transaction details</p>
                         </div>
-                        
-                        <div class="card-body p-4">
-                            <!-- Transaction Info -->
-                            <div class="receipt-section mb-4">
-                                <h5 class="section-title">
-                                    <i class="fas fa-receipt"></i>
-                                    Transaction Details
-                                </h5>
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <span class="label">Transaction ID:</span>
-                                        <span class="value" id="transaction-id">Loading...</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <span class="label">Reference Number:</span>
-                                        <span class="value" id="reference-number">TRW-2023-001234</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <span class="label">Date & Time:</span>
-                                        <span class="value" id="transaction-date">Loading...</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <span class="label">Status:</span>
-                                        <span class="value badge status-badge" id="transaction-status">Loading...</span>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Parties Info -->
-                            <div class="receipt-section mb-4">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="party-card">
-                                            <h6 class="party-title">
-                                                <i class="fas fa-user"></i>
-                                                Sender
-                                            </h6>
-                                            <div class="party-info">
-                                                <strong id="sender-name">Loading...</strong>
-                                                <div id="sender-account">Loading...</div>
-                                                <div id="sender-bank">TradeWavee Bank</div>
-                                                <div class="currency-badge" id="sender-currency">Loading...</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="party-card">
-                                            <h6 class="party-title">
-                                                <i class="fas fa-user-friends"></i>
-                                                Recipient
-                                            </h6>
-                                            <div class="party-info">
-                                                <strong id="receiver-name">Loading...</strong>
-                                                <div id="receiver-account">Loading...</div>
-                                                <div id="receiver-bank">TradeWavee Bank</div>
-                                                <div class="currency-badge" id="receiver-currency">Loading...</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Amount Info -->
-                            <div class="receipt-section mb-4">
-                                <div class="amount-display">
-                                    <div class="amount-label">Amount Transferred</div>
-                                    <div class="amount-value" id="amount-value">Loading...</div>
-                                    <div class="exchange-info" id="exchange-info" style="display: none;">
-                                        <small class="text-muted">
-                                            <i class="fas fa-exchange-alt me-1"></i>
-                                            Currency conversion: <span id="from-currency"></span> → <span id="to-currency"></span>
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- QR Code -->
-                            <div class="receipt-section mb-4">
-                                <div class="text-center">
-                                    <h6 class="section-title justify-content-center">
-                                        <i class="fas fa-qrcode"></i>
-                                        Transaction QR Code
-                                    </h6>
-                                    <div class="qr-code">
-                                        <i class="fas fa-qrcode"></i>
-                                    </div>
-                                    <p class="text-muted mt-2">Scan to verify transaction</p>
-                                </div>
-                            </div>
-
-                            <!-- Security Info -->
-                            <div class="receipt-section">
-                                <div class="security-info">
-                                    <div class="security-badge">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <span>Secured with 256-bit Encryption</span>
-                                    </div>
-                                    <div class="security-badge">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Verified Transaction</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-footer text-center py-4">
-                            <div class="actions">
-                                <button onclick="window.print()" class="btn btn-primary me-2">
-                                    <i class="fas fa-print me-2"></i>Print Receipt
-                                </button>
-                                <button onclick="downloadReceipt()" class="btn btn-secondary me-2">
-                                    <i class="fas fa-download me-2"></i>Download PDF
-                                </button>
-                                <button onclick="goToDashboard()" class="btn btn-secondary">
+                        <!-- Error State -->
+                        <div id="errorState" class="error-state hidden">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Unable to Load Receipt</h4>
+                            <p id="errorMessage">Transaction not found or you don't have permission to view this receipt.</p>
+                            <div class="actions mt-4">
+                                <button onclick="goToDashboard()" class="btn btn-primary">
                                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                                 </button>
+                                <button onclick="retryLoading()" class="btn btn-secondary">
+                                    <i class="fas fa-redo me-2"></i>Try Again
+                                </button>
                             </div>
-                            <div class="footer-note">
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    This is an official receipt from TradeWavee. Please keep it for your records.
-                                </small>
+                        </div>
+
+                        <!-- Receipt Content -->
+                        <div id="receiptContent">
+                            <div class="card-header bg-primary text-white text-center py-4">
+                                <div class="company-brand">
+                                    <div class="company-logo">
+                                        <i class="fas fa-wave-square"></i>
+                                    </div>
+                                    <div>
+                                        <h1 class="company-name">TradeWavee</h1>
+                                        <p class="company-tagline">Secure Digital Banking</p>
+                                    </div>
+                                </div>
+                                <h3 class="mt-3 mb-0">Transaction Receipt</h3>
+                            </div>
+                            
+                            <div class="card-body p-4">
+                                <!-- Transaction Info -->
+                                <div class="receipt-section mb-4">
+                                    <h5 class="section-title">
+                                        <i class="fas fa-receipt"></i>
+                                        Transaction Details
+                                    </h5>
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="label">Transaction ID:</span>
+                                            <span class="value" id="transaction-id">-</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="label">Reference Number:</span>
+                                            <span class="value" id="reference-number">-</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="label">Date & Time:</span>
+                                            <span class="value" id="transaction-date">-</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="label">Status:</span>
+                                            <span class="value badge status-badge" id="transaction-status">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Parties Info -->
+                                <div class="receipt-section mb-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="party-card">
+                                                <h6 class="party-title">
+                                                    <i class="fas fa-user"></i>
+                                                    Sender
+                                                </h6>
+                                                <div class="party-info">
+                                                    <strong id="sender-name">-</strong>
+                                                    <div id="sender-account">-</div>
+                                                    <div id="sender-bank">TradeWavee Bank</div>
+                                                    <div class="currency-badge" id="sender-currency">-</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="party-card">
+                                                <h6 class="party-title">
+                                                    <i class="fas fa-user-friends"></i>
+                                                    Recipient
+                                                </h6>
+                                                <div class="party-info">
+                                                    <strong id="receiver-name">-</strong>
+                                                    <div id="receiver-account">-</div>
+                                                    <div id="receiver-bank">TradeWavee Bank</div>
+                                                    <div class="currency-badge" id="receiver-currency">-</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Amount Info -->
+                                <div class="receipt-section mb-4">
+                                    <div class="amount-display">
+                                        <div class="amount-label">Amount Transferred</div>
+                                        <div class="amount-value" id="amount-value">-</div>
+                                        <div class="exchange-info hidden" id="exchange-info">
+                                            <small class="text-muted">
+                                                <i class="fas fa-exchange-alt me-1"></i>
+                                                Currency conversion: <span id="from-currency"></span> → <span id="to-currency"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- QR Code -->
+                                <div class="receipt-section mb-4">
+                                    <div class="text-center">
+                                        <h6 class="section-title justify-content-center">
+                                            <i class="fas fa-qrcode"></i>
+                                            Transaction QR Code
+                                        </h6>
+                                        <div class="qr-code">
+                                            <i class="fas fa-qrcode"></i>
+                                        </div>
+                                        <p class="text-muted mt-2">Scan to verify transaction</p>
+                                    </div>
+                                </div>
+
+                                <!-- Security Info -->
+                                <div class="receipt-section">
+                                    <div class="security-info">
+                                        <div class="security-badge">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Secured with 256-bit Encryption</span>
+                                        </div>
+                                        <div class="security-badge">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Verified Transaction</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer text-center py-4">
+                                <div class="actions">
+                                    <button onclick="window.print()" class="btn btn-primary me-2">
+                                        <i class="fas fa-print me-2"></i>Print Receipt
+                                    </button>
+                                    <button onclick="downloadReceipt()" class="btn btn-secondary me-2">
+                                        <i class="fas fa-download me-2"></i>Download PDF
+                                    </button>
+                                    <button onclick="goToDashboard()" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                    </button>
+                                </div>
+                                <div class="footer-note">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        This is an official receipt from TradeWavee. Please keep it for your records.
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -602,6 +672,7 @@
     <script>
         // Configuration
         const API_BASE_URL = 'https://scbanking.pythonanywhere.com/api';
+        let currentTransactionId = null;
 
         // Get transaction ID from URL
         function getTransactionIdFromUrl() {
@@ -633,75 +704,165 @@
             }, 5000);
         }
 
-        // Load transaction data
+        // Show loading state
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('receiptContent').classList.add('hidden');
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+            document.getElementById('receiptContent').classList.add('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Show receipt content
+        function showReceipt() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('receiptContent').classList.remove('hidden');
+        }
+
+        // Load transaction data with improved error handling
         async function loadTransactionData() {
-            const transactionId = getTransactionIdFromUrl();
+            currentTransactionId = getTransactionIdFromUrl();
             
-            if (!transactionId) {
-                showFlashMessage('No transaction ID provided', 'error');
+            if (!currentTransactionId) {
+                showError('No transaction ID provided in the URL.');
                 return;
             }
 
+            showLoading();
+
             try {
-                const response = await fetch(`${API_BASE_URL}/transaction_receipt/${transactionId}`, {
-                    credentials: 'include'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    displayTransactionData(data.receipt);
-                } else {
-                    showFlashMessage(data.message || 'Failed to load transaction', 'error');
-                    // Redirect to dashboard if not authorized
-                    if (data.message === 'Not authorized') {
-                        setTimeout(() => {
-                            goToDashboard();
-                        }, 2000);
+                // Try multiple possible API endpoints
+                const endpoints = [
+                    `${API_BASE_URL}/transaction_receipt/${currentTransactionId}`,
+                    `${API_BASE_URL}/transaction/${currentTransactionId}/receipt`,
+                    `${API_BASE_URL}/transactions/${currentTransactionId}`,
+                    `${API_BASE_URL}/user/transaction/${currentTransactionId}`
+                ];
+
+                let response = null;
+                let data = null;
+
+                // Try each endpoint until one works
+                for (const endpoint of endpoints) {
+                    try {
+                        console.log(`Trying endpoint: ${endpoint}`);
+                        response = await fetch(endpoint, {
+                            credentials: 'include',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log('Success with endpoint:', endpoint, data);
+                            break;
+                        }
+                    } catch (error) {
+                        console.log(`Endpoint ${endpoint} failed:`, error);
+                        continue;
                     }
                 }
+
+                if (!response || !response.ok) {
+                    throw new Error('Transaction not found or access denied');
+                }
+
+                if (data && data.success) {
+                    displayTransactionData(data.receipt || data.transaction || data);
+                } else if (data && data.transaction) {
+                    // Handle case where transaction data is directly in response
+                    displayTransactionData(data.transaction);
+                } else {
+                    throw new Error(data?.message || 'Failed to load transaction data');
+                }
+
             } catch (error) {
                 console.error('Error loading transaction:', error);
-                showFlashMessage('Network error. Please try again.', 'error');
+                
+                let errorMessage = 'Unable to load receipt. ';
+                
+                if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Network connection error. Please check your internet connection.';
+                } else if (error.message.includes('not found') || error.message.includes('404')) {
+                    errorMessage += 'Transaction not found. It may have been deleted or you may not have permission to view it.';
+                } else if (error.message.includes('authorized') || error.message.includes('401') || error.message.includes('403')) {
+                    errorMessage += 'You are not authorized to view this receipt. Please login again.';
+                } else {
+                    errorMessage += error.message || 'Please try again later.';
+                }
+                
+                showError(errorMessage);
+                
+                // If it's an auth error, redirect to login
+                if (error.message.includes('authorized') || error.message.includes('401')) {
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                }
             }
         }
 
         // Display transaction data
         function displayTransactionData(receipt) {
-            document.getElementById('transaction-id').textContent = receipt.transaction_id;
+            if (!receipt) {
+                throw new Error('No transaction data received');
+            }
+
+            // Update all fields with proper fallbacks
+            document.getElementById('transaction-id').textContent = receipt.transaction_id || receipt.id || 'N/A';
+            document.getElementById('reference-number').textContent = receipt.reference_number || `TRW-${receipt.id || 'N/A'}`;
             document.getElementById('transaction-date').textContent = formatDate(receipt.created_at);
-            document.getElementById('transaction-status').textContent = receipt.status;
+            document.getElementById('transaction-status').textContent = receipt.status || 'Completed';
             
-            document.getElementById('sender-name').textContent = receipt.sender_name;
-            document.getElementById('sender-account').textContent = receipt.sender_account;
-            document.getElementById('sender-currency').textContent = receipt.currency;
+            document.getElementById('sender-name').textContent = receipt.sender_name || receipt.sender?.name || 'Unknown';
+            document.getElementById('sender-account').textContent = receipt.sender_account || receipt.sender?.account_number || 'N/A';
+            document.getElementById('sender-currency').textContent = receipt.currency || receipt.sender_currency || 'USD';
             
-            document.getElementById('receiver-name').textContent = receipt.receiver_name;
-            document.getElementById('receiver-account').textContent = receipt.receiver_account;
-            document.getElementById('receiver-currency').textContent = receipt.currency;
+            document.getElementById('receiver-name').textContent = receipt.receiver_name || receipt.receiver?.name || 'Unknown';
+            document.getElementById('receiver-account').textContent = receipt.receiver_account || receipt.receiver?.account_number || 'N/A';
+            document.getElementById('receiver-currency').textContent = receipt.currency || receipt.receiver_currency || 'USD';
             
-            document.getElementById('amount-value').textContent = 
-                `${parseFloat(receipt.amount).toFixed(2)} ${receipt.currency}`;
+            const amount = parseFloat(receipt.amount || 0).toFixed(2);
+            const currency = receipt.currency || 'USD';
+            document.getElementById('amount-value').textContent = `${amount} ${currency}`;
             
             // Show exchange info if currencies are different
-            if (receipt.sender_currency !== receipt.receiver_currency) {
-                document.getElementById('exchange-info').style.display = 'block';
+            if (receipt.sender_currency && receipt.receiver_currency && receipt.sender_currency !== receipt.receiver_currency) {
+                document.getElementById('exchange-info').classList.remove('hidden');
                 document.getElementById('from-currency').textContent = receipt.sender_currency;
                 document.getElementById('to-currency').textContent = receipt.receiver_currency;
             }
+
+            showReceipt();
+            showFlashMessage('Receipt loaded successfully!', 'success');
         }
 
         // Format date
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
+            if (!dateString) return 'N/A';
+            
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch (error) {
+                return 'Invalid Date';
+            }
         }
 
         // Download receipt as PDF
@@ -715,6 +876,11 @@
             window.location.href = 'user_dashboard.html';
         }
 
+        // Retry loading
+        function retryLoading() {
+            loadTransactionData();
+        }
+
         // Check authentication
         async function checkAuth() {
             try {
@@ -725,7 +891,7 @@
                 const data = await response.json();
                 
                 if (!data.success) {
-                    showFlashMessage('Please login to view receipt', 'error');
+                    showError('Please login to view receipt');
                     setTimeout(() => {
                         window.location.href = 'login.html';
                     }, 2000);
@@ -734,10 +900,8 @@
                 }
             } catch (error) {
                 console.error('Auth check error:', error);
-                showFlashMessage('Please login to view receipt', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+                // Continue anyway - the transaction endpoint will handle auth
+                loadTransactionData();
             }
         }
 
