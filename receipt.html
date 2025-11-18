@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Receipt - Standard Chartered</title>
+    <title>Transaction Receipt - TradeWavee</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,6 +16,8 @@
             --gray-light: #f8fafc;
             --gray-medium: #64748b;
             --gray-dark: #334155;
+            --gradient-primary: linear-gradient(135deg, #1c77a2, #14cbf4);
+            --gradient-dark: linear-gradient(135deg, #0c2c47, #010711);
         }
         
         .receipt-container {
@@ -27,10 +29,12 @@
         
         .receipt-card {
             border: none;
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 15px 50px rgba(13, 115, 232, 0.15);
+            box-shadow: 0 25px 60px rgba(13, 115, 232, 0.15);
             animation: slideInUp 0.6s ease-out;
+            background: var(--white);
+            position: relative;
         }
         
         @keyframes slideInUp {
@@ -45,10 +49,11 @@
         }
         
         .card-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)) !important;
+            background: var(--gradient-dark) !important;
             border: none;
             position: relative;
             overflow: hidden;
+            padding: 2rem;
         }
         
         .card-header::before {
@@ -58,7 +63,7 @@
             left: 0;
             right: 0;
             height: 100%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            background: linear-gradient(45deg, transparent 30%, rgba(20, 203, 244, 0.1) 50%, transparent 70%);
             animation: shine 3s infinite;
         }
         
@@ -67,9 +72,46 @@
             100% { transform: translateX(100%); }
         }
         
+        .company-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .company-logo {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(20, 203, 244, 0.3);
+        }
+        
+        .company-logo i {
+            color: var(--white);
+            font-size: 2rem;
+        }
+        
+        .company-name {
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .company-tagline {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
         .receipt-section {
             padding: 1.5rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
         
         .receipt-section:last-of-type {
@@ -90,7 +132,7 @@
             content: '';
             width: 4px;
             height: 20px;
-            background: var(--primary-blue);
+            background: var(--gradient-primary);
             border-radius: 2px;
         }
         
@@ -123,9 +165,27 @@
         .party-card {
             background: var(--gray-light);
             padding: 1.5rem;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid rgba(0, 0, 0, 0.05);
             height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .party-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .party-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
         }
         
         .party-title {
@@ -135,6 +195,9 @@
             text-transform: uppercase;
             font-size: 0.9rem;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .party-info strong {
@@ -150,7 +213,7 @@
         
         .currency-badge {
             display: inline-block;
-            background: var(--primary-blue);
+            background: var(--gradient-primary);
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
@@ -160,10 +223,23 @@
         }
         
         .amount-display {
-            padding: 2rem;
+            padding: 2.5rem;
             background: linear-gradient(135deg, var(--light-blue), #f0f7ff);
-            border-radius: 16px;
+            border-radius: 20px;
             border: 2px dashed var(--primary-blue);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .amount-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%230d73e8"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
         }
         
         .amount-label {
@@ -177,23 +253,40 @@
         
         .amount-value {
             color: var(--dark-blue);
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 800;
             line-height: 1;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .exchange-info {
-            padding: 0.5rem;
+            padding: 0.75rem;
             background: rgba(57, 210, 2, 0.1);
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid rgba(57, 210, 2, 0.2);
+            margin-top: 1rem;
         }
         
         .security-info {
-            padding: 1rem;
-            background: rgba(57, 210, 2, 0.05);
-            border-radius: 12px;
-            border: 1px solid rgba(57, 210, 2, 0.1);
+            padding: 1.25rem;
+            background: rgba(20, 203, 244, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(20, 203, 244, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-green);
+            font-weight: 600;
         }
         
         .actions {
@@ -211,26 +304,60 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            border: none;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-            border: none;
+            background: var(--gradient-primary);
+            color: var(--white);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(13, 115, 232, 0.3);
+            box-shadow: 0 8px 25px rgba(20, 203, 244, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(20, 203, 244, 0.1);
+            border: 1px solid rgba(20, 203, 244, 0.3);
+            color: var(--gray-dark);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(20, 203, 244, 0.2);
         }
         
         .footer-note {
             color: var(--gray-medium);
+            margin-top: 1.5rem;
         }
         
         .badge {
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-weight: 600;
+        }
+        
+        .status-badge {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: var(--gray-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .qr-code i {
+            font-size: 3rem;
+            color: var(--gray-medium);
         }
         
         /* Print Styles */
@@ -251,7 +378,7 @@
             }
             
             .card-header {
-                background: var(--primary-blue) !important;
+                background: var(--dark-blue) !important;
             }
         }
         
@@ -268,7 +395,7 @@
             }
             
             .amount-value {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .actions {
@@ -278,6 +405,11 @@
             .btn {
                 width: 100%;
                 justify-content: center;
+            }
+            
+            .company-brand {
+                flex-direction: column;
+                text-align: center;
             }
         }
         
@@ -297,6 +429,20 @@
             border: none;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
+        
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.05;
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            transform: rotate(-15deg);
+            pointer-events: none;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
@@ -306,22 +452,39 @@
     <div class="receipt-container">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
+                <div class="col-md-10 col-lg-8">
                     <div class="card shadow-lg receipt-card">
+                        <!-- Watermark -->
+                        <div class="watermark">TRADEWAVEE</div>
+                        
                         <div class="card-header bg-primary text-white text-center py-4">
-                            <i class="fas fa-university fa-2x mb-3"></i>
-                            <h2 class="mb-0">Standard Chartered Bank</h2>
-                            <p class="mb-0">Transaction Receipt</p>
+                            <div class="company-brand">
+                                <div class="company-logo">
+                                    <i class="fas fa-wave-square"></i>
+                                </div>
+                                <div>
+                                    <h1 class="company-name">TradeWavee</h1>
+                                    <p class="company-tagline">Secure Digital Banking</p>
+                                </div>
+                            </div>
+                            <h3 class="mt-3 mb-0">Transaction Receipt</h3>
                         </div>
                         
                         <div class="card-body p-4">
                             <!-- Transaction Info -->
                             <div class="receipt-section mb-4">
-                                <h5 class="section-title">Transaction Details</h5>
+                                <h5 class="section-title">
+                                    <i class="fas fa-receipt"></i>
+                                    Transaction Details
+                                </h5>
                                 <div class="info-grid">
                                     <div class="info-item">
                                         <span class="label">Transaction ID:</span>
                                         <span class="value" id="transaction-id">Loading...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">Reference Number:</span>
+                                        <span class="value" id="reference-number">TRW-2023-001234</span>
                                     </div>
                                     <div class="info-item">
                                         <span class="label">Date & Time:</span>
@@ -329,7 +492,7 @@
                                     </div>
                                     <div class="info-item">
                                         <span class="label">Status:</span>
-                                        <span class="value badge bg-success" id="transaction-status">Loading...</span>
+                                        <span class="value badge status-badge" id="transaction-status">Loading...</span>
                                     </div>
                                 </div>
                             </div>
@@ -337,24 +500,30 @@
                             <!-- Parties Info -->
                             <div class="receipt-section mb-4">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <div class="party-card">
-                                            <h6 class="party-title">Sender</h6>
+                                            <h6 class="party-title">
+                                                <i class="fas fa-user"></i>
+                                                Sender
+                                            </h6>
                                             <div class="party-info">
                                                 <strong id="sender-name">Loading...</strong>
                                                 <div id="sender-account">Loading...</div>
-                                                <div id="sender-bank">Loading...</div>
+                                                <div id="sender-bank">TradeWavee Bank</div>
                                                 <div class="currency-badge" id="sender-currency">Loading...</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <div class="party-card">
-                                            <h6 class="party-title">Recipient</h6>
+                                            <h6 class="party-title">
+                                                <i class="fas fa-user-friends"></i>
+                                                Recipient
+                                            </h6>
                                             <div class="party-info">
                                                 <strong id="receiver-name">Loading...</strong>
                                                 <div id="receiver-account">Loading...</div>
-                                                <div id="receiver-bank">Loading...</div>
+                                                <div id="receiver-bank">TradeWavee Bank</div>
                                                 <div class="currency-badge" id="receiver-currency">Loading...</div>
                                             </div>
                                         </div>
@@ -364,40 +533,63 @@
 
                             <!-- Amount Info -->
                             <div class="receipt-section mb-4">
-                                <div class="amount-display text-center">
+                                <div class="amount-display">
                                     <div class="amount-label">Amount Transferred</div>
                                     <div class="amount-value" id="amount-value">Loading...</div>
-                                    <div class="exchange-info mt-2" id="exchange-info" style="display: none;">
+                                    <div class="exchange-info" id="exchange-info" style="display: none;">
                                         <small class="text-muted">
+                                            <i class="fas fa-exchange-alt me-1"></i>
                                             Currency conversion: <span id="from-currency"></span> → <span id="to-currency"></span>
                                         </small>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- QR Code -->
+                            <div class="receipt-section mb-4">
+                                <div class="text-center">
+                                    <h6 class="section-title justify-content-center">
+                                        <i class="fas fa-qrcode"></i>
+                                        Transaction QR Code
+                                    </h6>
+                                    <div class="qr-code">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <p class="text-muted mt-2">Scan to verify transaction</p>
+                                </div>
+                            </div>
+
                             <!-- Security Info -->
                             <div class="receipt-section">
-                                <div class="security-info text-center">
-                                    <i class="fas fa-shield-alt text-success me-2"></i>
-                                    <small class="text-muted">
-                                        This transaction is secured with 256-bit encryption
-                                    </small>
+                                <div class="security-info">
+                                    <div class="security-badge">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Secured with 256-bit Encryption</span>
+                                    </div>
+                                    <div class="security-badge">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Verified Transaction</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="card-footer text-center py-3">
+                        <div class="card-footer text-center py-4">
                             <div class="actions">
                                 <button onclick="window.print()" class="btn btn-primary me-2">
                                     <i class="fas fa-print me-2"></i>Print Receipt
                                 </button>
-                                <button onclick="goToDashboard()" class="btn btn-outline-secondary">
+                                <button onclick="downloadReceipt()" class="btn btn-secondary me-2">
+                                    <i class="fas fa-download me-2"></i>Download PDF
+                                </button>
+                                <button onclick="goToDashboard()" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                                 </button>
                             </div>
-                            <div class="footer-note mt-3">
+                            <div class="footer-note">
                                 <small class="text-muted">
-                                    Thank you for banking with Standard Chartered
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    This is an official receipt from TradeWavee. Please keep it for your records.
                                 </small>
                             </div>
                         </div>
@@ -408,14 +600,13 @@
     </div>
 
     <script>
-        // Configuration - UPDATE THIS WITH YOUR PYTHONANYWHERE URL
-        // Configuration - UPDATED WITH CORRECT URL
-        const API_BASE_URL = 'https://SCBanking.pythonanywhere.com/api';
+        // Configuration
+        const API_BASE_URL = 'https://scbanking.pythonanywhere.com/api';
 
         // Get transaction ID from URL
         function getTransactionIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('transaction_id');
+            return urlParams.get('id') || urlParams.get('transaction_id');
         }
 
         // Show flash message
@@ -483,12 +674,10 @@
             
             document.getElementById('sender-name').textContent = receipt.sender_name;
             document.getElementById('sender-account').textContent = receipt.sender_account;
-            document.getElementById('sender-bank').textContent = 'Standard Chartered'; // Default bank
             document.getElementById('sender-currency').textContent = receipt.currency;
             
             document.getElementById('receiver-name').textContent = receipt.receiver_name;
             document.getElementById('receiver-account').textContent = receipt.receiver_account;
-            document.getElementById('receiver-bank').textContent = 'Standard Chartered'; // Default bank
             document.getElementById('receiver-currency').textContent = receipt.currency;
             
             document.getElementById('amount-value').textContent = 
@@ -515,15 +704,15 @@
             });
         }
 
+        // Download receipt as PDF
+        function downloadReceipt() {
+            showFlashMessage('PDF download feature would be implemented here');
+            // In a real implementation, this would generate and download a PDF
+        }
+
         // Navigate to dashboard
         function goToDashboard() {
-            // Check if user is admin or regular user
-            const userType = localStorage.getItem('userType'); // You'll need to set this on login
-            if (userType === 'admin') {
-                window.location.href = 'admin_dashboard.html';
-            } else {
-                window.location.href = 'user_dashboard.html';
-            }
+            window.location.href = 'user_dashboard.html';
         }
 
         // Check authentication
@@ -541,8 +730,6 @@
                         window.location.href = 'login.html';
                     }, 2000);
                 } else {
-                    // Store user type for navigation
-                    localStorage.setItem('userType', data.user.is_admin ? 'admin' : 'user');
                     loadTransactionData();
                 }
             } catch (error) {

@@ -161,6 +161,28 @@
             transform: none;
         }
 
+        /* Transaction Receipt Button */
+        .receipt-btn {
+            background: rgba(57, 210, 2, 0.2);
+            border: 1px solid rgba(57, 210, 2, 0.3);
+            color: var(--light-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .receipt-btn:hover {
+            background: rgba(57, 210, 2, 0.3);
+            transform: translateY(-2px);
+            color: var(--light-color);
+        }
+
         /* Rest of your existing styles remain the same */
         .dashboard-header {
             background: var(--gradient-dark);
@@ -1544,7 +1566,7 @@
             }
         }
 
-        // Display transactions - FIXED LOGIC
+        // Display transactions - UPDATED WITH RECEIPT BUTTONS
         function displayTransactions(transactions) {
             const container = document.getElementById('transactionsList');
             
@@ -1560,7 +1582,6 @@
             }
 
             container.innerHTML = transactions.map(transaction => {
-                // FIXED: Proper transaction display logic
                 const isSender = transaction.sender_id === userData.id;
                 const isReceiver = transaction.receiver_id === userData.id;
                 
@@ -1594,13 +1615,24 @@
                         <span class="transaction-amount ${amountClass}">
                             ${amountDisplay}
                         </span>
-                        <span class="status-badge status-${(transaction.status || 'completed').toLowerCase()}">
-                            ${transaction.status || 'Completed'}
-                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="status-badge status-${(transaction.status || 'completed').toLowerCase()}">
+                                ${transaction.status || 'Completed'}
+                            </span>
+                            <button class="receipt-btn" onclick="viewReceipt('${transaction.id}')">
+                                <i class="fas fa-receipt"></i>
+                                Receipt
+                            </button>
+                        </div>
                     </div>
                 </div>
                 `;
             }).join('');
+        }
+
+        // View receipt function
+        function viewReceipt(transactionId) {
+            window.location.href = `receipt.html?id=${transactionId}`;
         }
 
         // Logout function
@@ -1688,6 +1720,12 @@
                         // Reload data
                         await loadUserData();
                         await loadTransactions();
+                        
+                        // Offer to view receipt
+                        const viewReceipt = confirm('Would you like to view the receipt?');
+                        if (viewReceipt) {
+                            window.location.href = `receipt.html?id=${result.transaction_id}`;
+                        }
                     } else {
                         throw new Error(result.message || 'Transfer failed');
                     }
@@ -1928,7 +1966,7 @@
             document.getElementById('pin').value = pin;
         }
 
-        // Process transfer
+        // Process transfer - UPDATED WITH RECEIPT REDIRECTION
         async function processTransfer() {
             const pin = document.getElementById('pin').value;
             
@@ -1971,7 +2009,7 @@
                     // Show success message with receipt option
                     const success = confirm('Transfer completed successfully! Would you like to view the receipt?');
                     if (success) {
-                        window.location.href = `transaction_receipt.html?id=${data.transaction_id}`;
+                        window.location.href = `receipt.html?id=${data.transaction_id}`;
                     }
                 } else {
                     // Show appropriate error message with support option
