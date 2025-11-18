@@ -161,8 +161,8 @@
             transform: none;
         }
 
-        /* Transaction Receipt Button */
-        .receipt-btn {
+        /* Transaction Receipt Button - REMOVED */
+        /* .receipt-btn {
             background: rgba(57, 210, 2, 0.2);
             border: 1px solid rgba(57, 210, 2, 0.3);
             color: var(--light-color);
@@ -181,7 +181,7 @@
             background: rgba(57, 210, 2, 0.3);
             transform: translateY(-2px);
             color: var(--light-color);
-        }
+        } */
 
         /* Rest of your existing styles remain the same */
         .dashboard-header {
@@ -1572,7 +1572,7 @@
         }
     }
 
-    // Display transactions - FIXED TRANSACTION ID HANDLING
+    // Display transactions - REMOVED RECEIPT BUTTON
     function displayTransactions(transactions) {
         const container = document.getElementById('transactionsList');
         
@@ -1607,14 +1607,6 @@
                 amountClass = '';
             }
 
-            // Get transaction ID - try multiple possible fields
-            const transactionId = transaction.id || transaction.transaction_id;
-            
-            if (!transactionId) {
-                console.warn('Transaction missing ID:', transaction);
-                return ''; // Skip transactions without IDs
-            }
-
             return `
             <div class="transaction-item">
                 <div class="transaction-info">
@@ -1633,31 +1625,11 @@
                         <span class="status-badge status-${(transaction.status || 'completed').toLowerCase()}">
                             ${transaction.status || 'Completed'}
                         </span>
-                        <button class="receipt-btn" onclick="viewReceipt('${transactionId}')">
-                            <i class="fas fa-receipt"></i>
-                            Receipt
-                        </button>
                     </div>
                 </div>
             </div>
             `;
         }).join('');
-    }
-
-    // View receipt function - FIXED
-    function viewReceipt(transactionId) {
-        if (!transactionId) {
-            alert('Transaction ID not available');
-            return;
-        }
-        
-        console.log('Viewing receipt for transaction:', transactionId);
-        
-        // Store in session storage as backup
-        sessionStorage.setItem('lastTransactionId', transactionId);
-        
-        // Navigate to receipt page
-        window.location.href = `receipt.html?id=${transactionId}`;
     }
 
     // Show error message
@@ -1692,7 +1664,7 @@
         }
     }
 
-    // Bank Transfer Function - FIXED TRANSACTION ID HANDLING
+    // Bank Transfer Function
     async function processBankTransfer() {
         const accountNumber = document.getElementById('bankAccountNumber').value.trim();
         const amount = document.getElementById('bankAmount').value;
@@ -1769,20 +1741,6 @@
                     // Reload data
                     await loadUserData();
                     await loadTransactions();
-                    
-                    // Get transaction ID from response - try multiple possible fields
-                    const transactionId = result.transaction_id || result.id || result.transaction?.id;
-                    
-                    if (transactionId) {
-                        // Offer to view receipt
-                        const viewReceipt = confirm('Would you like to view the receipt?');
-                        if (viewReceipt) {
-                            window.location.href = `receipt.html?id=${transactionId}`;
-                        }
-                    } else {
-                        console.warn('No transaction ID in response:', result);
-                        alert('Transfer completed but receipt is not available.');
-                    }
                 } else {
                     throw new Error(result.message || 'Transfer failed');
                 }
@@ -2026,7 +1984,7 @@
         document.getElementById('pin').value = pin;
     }
 
-    // Process transfer - FIXED TRANSACTION ID HANDLING
+    // Process transfer
     async function processTransfer() {
         const pin = document.getElementById('pin').value;
         
@@ -2066,19 +2024,7 @@
                 await loadUserData();
                 await loadTransactions();
                 
-                // Get transaction ID from response - try multiple possible fields
-                const transactionId = data.transaction_id || data.id || data.transaction?.id;
-                
-                if (transactionId) {
-                    // Show success message with receipt option
-                    const success = confirm('Transfer completed successfully! Would you like to view the receipt?');
-                    if (success) {
-                        window.location.href = `receipt.html?id=${transactionId}`;
-                    }
-                } else {
-                    console.warn('No transaction ID in response:', data);
-                    alert('Transfer completed but receipt is not available.');
-                }
+                alert('Transfer completed successfully!');
             } else {
                 // Show appropriate error message with support option
                 if (data.message.includes('not found') || data.message.includes('Invalid') || data.message.includes('recipient')) {
