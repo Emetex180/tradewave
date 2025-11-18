@@ -25,7 +25,68 @@
             color: var(--light-color);
         }
 
-        /* Modern Header */
+        /* Support Button Styles */
+        .support-section {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .support-btn {
+            background: rgba(20, 203, 244, 0.2);
+            border: 1px solid rgba(20, 203, 244, 0.3);
+            color: var(--light-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+            margin: 0.5rem;
+        }
+
+        .support-btn:hover {
+            background: rgba(20, 203, 244, 0.3);
+            transform: translateY(-2px);
+            color: var(--light-color);
+        }
+
+        .support-modal .modal-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .support-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .support-option {
+            background: rgba(20, 203, 244, 0.1);
+            border: 1px solid rgba(20, 203, 244, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .support-option:hover {
+            background: rgba(20, 203, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .support-option i {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Rest of your existing styles remain the same */
         .dashboard-header {
             background: var(--gradient-dark);
             padding: 1rem 0;
@@ -1015,6 +1076,14 @@
         <!-- Main Content -->
         <div class="dashboard-content">
             <div class="container">
+                <!-- Support Section -->
+                <div class="support-section">
+                    <button class="support-btn" data-bs-toggle="modal" data-bs-target="#supportModal">
+                        <i class="fas fa-headset"></i>
+                        Contact Support
+                    </button>
+                </div>
+
                 <!-- Account Summary -->
                 <div class="account-summary">
                     <div class="row g-4">
@@ -1231,6 +1300,58 @@
         </div>
     </div>
 
+    <!-- Support Modal -->
+    <div class="modal fade support-modal" id="supportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-headset me-2"></i>Contact Support
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-life-ring fa-3x mb-3" style="color: var(--accent-color);"></i>
+                        <h4>How can we help you?</h4>
+                        <p class="text-muted">Choose your preferred support option</p>
+                    </div>
+                    
+                    <div class="support-options">
+                        <div class="support-option" onclick="contactSupport('email')">
+                            <i class="fas fa-envelope"></i>
+                            <h6>Email Support</h6>
+                            <p class="small mb-0">Get help via email</p>
+                            <small class="text-muted">support@tradewavee.com</small>
+                        </div>
+                        
+                        <div class="support-option" onclick="contactSupport('phone')">
+                            <i class="fas fa-phone"></i>
+                            <h6>Phone Support</h6>
+                            <p class="small mb-0">Call our support team</p>
+                            <small class="text-muted">+1 (555) 123-4567</small>
+                        </div>
+                        
+                        <div class="support-option" onclick="contactSupport('chat')">
+                            <i class="fas fa-comments"></i>
+                            <h6>Live Chat</h6>
+                            <p class="small mb-0">Chat with us instantly</p>
+                            <small class="text-muted">Available 24/7</small>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info border-0 mt-3" style="background: rgba(20, 203, 244, 0.1); border: 1px solid rgba(20, 203, 244, 0.2);">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Our support team is available 24/7 to assist you with any issues.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer Navigation -->
     <footer class="footer">
         <nav class="footer-nav">
@@ -1258,12 +1379,11 @@
                 <div class="active-indicator"></div>
             </a>
 
-            <a href="#" class="nav-item" onclick="setActive(this)">
+            <a href="#" class="nav-item" data-bs-toggle="modal" data-bs-target="#supportModal" onclick="setActive(this)">
                 <div class="nav-icon">
-                    <i class="fas fa-bell"></i>
-                    <div class="notification-badge"></div>
+                    <i class="fas fa-headset"></i>
                 </div>
-                <span class="nav-text">Alerts</span>
+                <span class="nav-text">Support</span>
                 <div class="active-indicator"></div>
             </a>
         </nav>
@@ -1355,7 +1475,7 @@
             }
         }
 
-        // Display transactions
+        // Display transactions - FIXED LOGIC
         function displayTransactions(transactions) {
             const container = document.getElementById('transactionsList');
             
@@ -1370,29 +1490,49 @@
                 return;
             }
 
-            container.innerHTML = transactions.map(transaction => `
+            container.innerHTML = transactions.map(transaction => {
+                // FIXED: Only show +/- for the current transaction, not affecting all history
+                const isCurrentUserSender = transaction.sender_id === userData.id;
+                const isCurrentUserReceiver = transaction.receiver_id === userData.id;
+                
+                let transactionType, amountDisplay, amountClass;
+                
+                if (isCurrentUserSender) {
+                    transactionType = `<i class="fas fa-arrow-up text-danger"></i>Sent to ${transaction.receiver_name}`;
+                    amountDisplay = `-${transaction.amount.toFixed(2)} ${transaction.currency}`;
+                    amountClass = 'amount-sent';
+                } else if (isCurrentUserReceiver) {
+                    transactionType = `<i class="fas fa-arrow-down text-success"></i>Received from ${transaction.sender_name}`;
+                    amountDisplay = `+${transaction.amount.toFixed(2)} ${transaction.currency}`;
+                    amountClass = 'amount-received';
+                } else {
+                    // This shouldn't happen, but just in case
+                    transactionType = `<i class="fas fa-exchange-alt text-warning"></i>Transaction`;
+                    amountDisplay = `${transaction.amount.toFixed(2)} ${transaction.currency}`;
+                    amountClass = '';
+                }
+
+                return `
                 <div class="transaction-item">
                     <div class="transaction-info">
                         <div class="transaction-type">
-                            ${transaction.sender_id === userData.id ? 
-                                '<i class="fas fa-arrow-up text-danger"></i>Sent to ' + transaction.receiver_name :
-                                '<i class="fas fa-arrow-down text-success"></i>Received from ' + transaction.sender_name}
+                            ${transactionType}
                         </div>
                         <div class="transaction-date">
                             ${new Date(transaction.created_at).toLocaleString()}
                         </div>
                     </div>
                     <div class="transaction-details">
-                        <span class="transaction-amount ${transaction.sender_id === userData.id ? 'amount-sent' : 'amount-received'}">
-                            ${transaction.sender_id === userData.id ? '-' : '+'}
-                            ${transaction.amount.toFixed(2)} ${transaction.currency}
+                        <span class="transaction-amount ${amountClass}">
+                            ${amountDisplay}
                         </span>
                         <span class="status-badge status-${transaction.status.toLowerCase()}">
                             ${transaction.status}
                         </span>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Logout function
@@ -1406,6 +1546,27 @@
                 console.error('Logout failed:', error);
                 window.location.href = 'login.html';
             }
+        }
+
+        // Support functions
+        function contactSupport(method) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('supportModal'));
+            modal.hide();
+            
+            let message = '';
+            switch(method) {
+                case 'email':
+                    message = 'Please email us at support@tradewavee.com for assistance.';
+                    break;
+                case 'phone':
+                    message = 'Call our support team at +1 (555) 123-4567 for immediate help.';
+                    break;
+                case 'chat':
+                    message = 'Our live chat support will be available shortly. Thank you for your patience.';
+                    break;
+            }
+            
+            alert(message);
         }
 
         // Search functionality
@@ -1460,6 +1621,11 @@
                         searchResults.appendChild(div);
                     });
                     
+                    searchResults.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    searchResults.innerHTML = '<div class="search-result-item">Error searching accounts</div>';
                     searchResults.style.display = 'block';
                 });
         });
@@ -1598,7 +1764,7 @@
             document.getElementById('pin').value = pin;
         }
 
-        // Process transfer
+        // Process transfer - FIXED with better error handling
         async function processTransfer() {
             const pin = document.getElementById('pin').value;
             
@@ -1618,7 +1784,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                        'Accept': 'application/json'
                     },
                     credentials: 'include',
                     body: JSON.stringify({
@@ -1635,17 +1801,35 @@
                     modal.hide();
                     
                     // Reload user data and transactions
-                    loadUserData();
-                    loadTransactions();
+                    await loadUserData();
+                    await loadTransactions();
                     
-                    alert('Transfer completed successfully!');
+                    // Show success message with receipt option
+                    const success = confirm('Transfer completed successfully! Would you like to view the receipt?');
+                    if (success) {
+                        window.location.href = `transaction_receipt.html?id=${data.transaction_id}`;
+                    }
                 } else {
-                    alert('Error: ' + data.message);
+                    // Show appropriate error message with support option
+                    if (data.message.includes('not found') || data.message.includes('Invalid') || data.message.includes('recipient')) {
+                        const needSupport = confirm(`Error: ${data.message}\n\nWould you like to contact support for assistance?`);
+                        if (needSupport) {
+                            const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                            supportModal.show();
+                        }
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
             } catch (error) {
-                alert('Error processing transaction: ' + error);
+                console.error('Transfer error:', error);
+                const needSupport = confirm('Network error processing transaction. Would you like to contact support?');
+                if (needSupport) {
+                    const supportModal = new bootstrap.Modal(document.getElementById('supportModal'));
+                    supportModal.show();
+                }
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
