@@ -8,10 +8,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #0d73e8;
-            --accent-green: #39d202;
-            --dark-blue: #0a5cb5;
-            --light-blue: #e8f2ff;
+            --primary-purple: #8B5FBF;
+            --accent-teal: #14CBF4;
+            --dark-purple: #6A4A9C;
+            --light-purple: #F3E8FF;
             --white: #ffffff;
             --gray-light: #f8f9fa;
             --gray-medium: #6c757d;
@@ -31,7 +31,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8f2ff 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #f3e8ff 100%);
             min-height: 100vh;
             color: var(--gray-dark);
         }
@@ -42,7 +42,7 @@
 
         /* Header Styles */
         .admin-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
             color: var(--white);
             padding: 1.5rem 0;
             box-shadow: var(--shadow);
@@ -71,7 +71,7 @@
         .logo-inner {
             font-weight: bold;
             font-size: 1.2rem;
-            color: var(--primary-blue);
+            color: var(--primary-purple);
         }
 
         .admin-brand-text h1 {
@@ -85,7 +85,7 @@
             font-size: 0.9rem;
             opacity: 0.9;
             margin: 0;
-            color: var(--light-blue);
+            color: var(--light-purple);
         }
 
         .admin-user-menu {
@@ -141,7 +141,7 @@
             box-shadow: var(--shadow);
             text-align: center;
             transition: transform 0.3s ease;
-            border-left: 4px solid var(--primary-blue);
+            border-left: 4px solid var(--primary-purple);
         }
 
         .stat-card:hover {
@@ -150,14 +150,14 @@
 
         .stat-icon {
             font-size: 2.5rem;
-            color: var(--primary-blue);
+            color: var(--primary-purple);
             margin-bottom: 1rem;
         }
 
         .stat-value {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--dark-blue);
+            color: var(--dark-purple);
             margin-bottom: 0.5rem;
         }
 
@@ -176,7 +176,7 @@
         }
 
         .create-user-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
             color: var(--white);
             padding: 1.5rem 2rem;
         }
@@ -211,12 +211,12 @@
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 0.2rem rgba(13, 115, 232, 0.25);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(139, 95, 191, 0.25);
         }
 
         .create-user-btn {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #2db300 100%);
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #0da5c7 100%);
             color: var(--white);
             border: none;
             padding: 1rem 2rem;
@@ -232,7 +232,7 @@
 
         .create-user-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(57, 210, 2, 0.4);
+            box-shadow: 0 6px 20px rgba(20, 203, 244, 0.4);
         }
 
         .create-user-btn:disabled {
@@ -250,7 +250,7 @@
         }
 
         .users-table-header {
-            background: var(--gray-light);
+            background: var(--light-purple);
             padding: 1.5rem 2rem;
             border-bottom: 1px solid #dee2e6;
         }
@@ -259,7 +259,7 @@
             margin: 0;
             font-size: 1.3rem;
             font-weight: 600;
-            color: var(--gray-dark);
+            color: var(--dark-purple);
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -279,12 +279,12 @@
         }
 
         .modern-table th {
-            background: var(--light-blue);
-            color: var(--dark-blue);
+            background: var(--light-purple);
+            color: var(--dark-purple);
             font-weight: 600;
             padding: 1.25rem 1rem;
             text-align: left;
-            border-bottom: 2px solid var(--primary-blue);
+            border-bottom: 2px solid var(--primary-purple);
         }
 
         .modern-table td {
@@ -298,13 +298,13 @@
         }
 
         .modern-table tbody tr:hover {
-            background-color: var(--light-blue);
+            background-color: var(--light-purple);
         }
 
         .account-number {
             font-family: 'Courier New', monospace;
             font-weight: 600;
-            color: var(--dark-blue);
+            color: var(--dark-purple);
         }
 
         .currency-badge {
