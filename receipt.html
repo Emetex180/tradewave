@@ -8,14 +8,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0c247; /* Dark Azure */
-            --secondary-color: #0a1d3a;
+            --dark-bg: #010711;
+            --primary-color: #1c77a2;
+            --secondary-color: #0c2c47;
             --accent-color: #14cbf4;
-            --light-color: #ffffff;
-            --dark-bg: #f5f7fa;
-            --text-dark: #333333;
-            --text-light: #666666;
-            --border-color: #e1e5eb;
+            --light-color: #eeeff0;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            --gradient-dark: linear-gradient(135deg, var(--secondary-color), var(--dark-bg));
             --success-color: #27ae60;
             --warning-color: #f39c12;
             --error-color: #e74c3c;
@@ -24,7 +23,7 @@
         body {
             background: var(--dark-bg);
             font-family: 'Segoe UI', system-ui, sans-serif;
-            color: var(--text-dark);
+            color: var(--light-color);
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -37,17 +36,31 @@
             max-width: 400px;
             width: 100%;
             margin: 0 auto;
-            background: var(--light-color);
+            background: rgba(1, 7, 17, 0.95);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(20, 203, 244, 0.1);
+            border: 1px solid rgba(20, 203, 244, 0.2);
             overflow: hidden;
             position: relative;
         }
         
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            font-weight: 900;
+            color: rgba(20, 203, 244, 0.03);
+            white-space: nowrap;
+            z-index: 0;
+        }
+        
         .header {
-            background: var(--primary-color);
+            background: var(--gradient-dark);
             padding: 20px;
             text-align: center;
+            border-bottom: 2px solid var(--accent-color);
             position: relative;
         }
         
@@ -63,7 +76,7 @@
             width: 60px;
             height: 60px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,7 +101,7 @@
         }
         
         .tagline {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(238, 239, 240, 0.8);
             font-size: 14px;
             margin: 0;
         }
@@ -96,26 +109,34 @@
         .receipt-title {
             font-size: 16px;
             font-weight: 600;
-            color: var(--light-color);
+            color: var(--accent-color);
             margin: 15px 0 0 0;
-            opacity: 0.9;
         }
         
         .content {
             padding: 25px;
+            position: relative;
+            z-index: 1;
         }
         
         .section {
             margin-bottom: 24px;
+            padding: 15px;
+            background: rgba(12, 44, 71, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(20, 203, 244, 0.1);
         }
         
         .section-title {
             font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
+            font-weight: 700;
+            color: var(--accent-color);
             margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(20, 203, 244, 0.2);
+            padding-bottom: 8px;
         }
         
         .info-grid {
@@ -128,7 +149,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(20, 203, 244, 0.1);
         }
         
         .info-row:last-child {
@@ -136,14 +157,14 @@
         }
         
         .label {
-            font-weight: 500;
-            color: var(--text-light);
+            font-weight: 600;
+            color: rgba(238, 239, 240, 0.8);
             font-size: 14px;
         }
         
         .value {
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--light-color);
             font-size: 14px;
             text-align: right;
         }
@@ -155,63 +176,72 @@
         }
         
         .party-card {
-            background: #f8f9fa;
+            background: rgba(12, 44, 71, 0.4);
             padding: 15px;
             border-radius: 10px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(20, 203, 244, 0.15);
         }
         
         .party-title {
             font-size: 12px;
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 10px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .party-name {
             font-size: 15px;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--light-color);
             margin-bottom: 5px;
         }
         
         .party-detail {
             font-size: 13px;
-            color: var(--text-light);
+            color: rgba(238, 239, 240, 0.8);
             margin-bottom: 3px;
         }
         
         .amount-section {
             text-align: center;
             padding: 20px;
-            background: #f8f9fa;
+            background: rgba(20, 203, 244, 0.05);
             border-radius: 12px;
+            border: 2px dashed rgba(20, 203, 244, 0.3);
             margin: 20px 0;
-            border: 1px solid var(--border-color);
         }
         
         .amount-label {
             font-size: 14px;
-            color: var(--text-light);
+            color: rgba(238, 239, 240, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 8px;
         }
         
         .amount {
             font-size: 32px;
             font-weight: 800;
-            color: var(--primary-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             line-height: 1;
         }
         
         .currency {
             font-size: 14px;
-            color: var(--text-light);
+            color: var(--accent-color);
+            font-weight: 600;
             margin-top: 5px;
         }
         
         .fee-breakdown {
-            background: #f8f9fa;
+            background: rgba(12, 44, 71, 0.4);
             padding: 15px;
             border-radius: 10px;
             margin-top: 15px;
@@ -220,17 +250,17 @@
         .fee-row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 8px 0;
             font-size: 14px;
         }
         
         .fee-label {
-            color: var(--text-light);
+            color: rgba(238, 239, 240, 0.8);
         }
         
         .fee-value {
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--light-color);
         }
         
         .security {
@@ -239,10 +269,10 @@
             align-items: center;
             gap: 15px;
             padding: 12px 15px;
-            background: #f8f9fa;
+            background: rgba(20, 203, 244, 0.08);
             border-radius: 10px;
             margin-top: 20px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(20, 203, 244, 0.2);
         }
         
         .security-item {
@@ -250,20 +280,20 @@
             align-items: center;
             gap: 6px;
             font-size: 12px;
-            color: var(--text-light);
-            font-weight: 500;
+            color: var(--accent-color);
+            font-weight: 600;
         }
         
         .footer {
             text-align: center;
             padding: 20px;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid rgba(20, 203, 244, 0.2);
             margin-top: 20px;
         }
         
         .footer-note {
             font-size: 12px;
-            color: var(--text-light);
+            color: rgba(238, 239, 240, 0.6);
             margin-bottom: 10px;
             line-height: 1.5;
         }
@@ -289,14 +319,14 @@
         }
         
         .btn-primary {
-            background: var(--primary-color);
+            background: var(--gradient-primary);
             color: var(--light-color);
         }
         
         .btn-secondary {
-            background: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
+            background: rgba(20, 203, 244, 0.1);
+            color: var(--light-color);
+            border: 1px solid rgba(20, 203, 244, 0.3);
         }
         
         .status-badge {
@@ -307,18 +337,21 @@
         }
         
         .status-badge.completed {
-            background: rgba(39, 174, 96, 0.1);
+            background: rgba(39, 174, 96, 0.2);
             color: var(--success-color);
+            border: 1px solid rgba(39, 174, 96, 0.3);
         }
         
         .status-badge.failed {
-            background: rgba(231, 76, 60, 0.1);
+            background: rgba(231, 76, 60, 0.2);
             color: var(--error-color);
+            border: 1px solid rgba(231, 76, 60, 0.3);
         }
         
         .status-badge.pending {
-            background: rgba(243, 156, 18, 0.1);
+            background: rgba(243, 156, 18, 0.2);
             color: var(--warning-color);
+            border: 1px solid rgba(243, 156, 18, 0.3);
         }
         
         .hidden {
@@ -342,6 +375,10 @@
             .actions {
                 display: none;
             }
+            
+            .watermark {
+                color: rgba(0, 0, 0, 0.03);
+            }
         }
         
         /* Loading states */
@@ -353,8 +390,8 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(12, 34, 119, 0.3);
-            border-top: 3px solid var(--primary-color);
+            border: 3px solid rgba(20, 203, 244, 0.3);
+            border-top: 3px solid var(--accent-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -368,6 +405,9 @@
 </head>
 <body>
     <div class="receipt-container">
+        <!-- Watermark -->
+        <div class="watermark">Creda Flux E-Wallet</div>
+        
         <!-- Loading State -->
         <div id="loadingState" class="loading">
             <div class="spinner"></div>
@@ -392,7 +432,7 @@
                         <div class="logo-placeholder">
                             <i class="fas fa-wave-square"></i>
                         </div>
-                    </div>Creda Flux E-Wallet
+                    </div>
                     <div>
                         <h1 class="company-name">Creda Flux E-Wallet</h1>
                         <p class="tagline">Secure E-Wallet Solution</p>
@@ -405,7 +445,10 @@
             <div class="content">
                 <!-- Transaction Details -->
                 <div class="section">
-                    <div class="section-title">Transaction Details</div>
+                    <div class="section-title">
+                        <i class="fas fa-receipt"></i>
+                        TRANSACTION DETAILS
+                    </div>
                     <div class="info-grid">
                         <div class="info-row">
                             <span class="label">Transaction ID:</span>
@@ -428,11 +471,17 @@
                 
                 <!-- Parties -->
                 <div class="section">
-                    <div class="section-title">Parties Involved</div>
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        PARTIES INVOLVED
+                    </div>
                     <div class="parties">
                         <!-- Sender -->
                         <div class="party-card">
-                            <div class="party-title">Sender</div>
+                            <div class="party-title">
+                                <i class="fas fa-user"></i>
+                                SENDER
+                            </div>
                             <div class="party-name" id="senderName">-</div>
                             <div class="party-detail" id="senderAccount">Account: -</div>
                             <div class="party-detail" id="senderBank">Bank: Creda Flux E-Wallet</div>
@@ -440,7 +489,10 @@
                         
                         <!-- Receiver -->
                         <div class="party-card">
-                            <div class="party-title">Receiver</div>
+                            <div class="party-title">
+                                <i class="fas fa-user-friends"></i>
+                                RECEIVER
+                            </div>
                             <div class="party-name" id="receiverName">-</div>
                             <div class="party-detail" id="receiverAccount">Account: -</div>
                             <div class="party-detail" id="receiverBank">Bank: Creda Flux E-Wallet</div>
@@ -457,21 +509,24 @@
                 
                 <!-- Fee Breakdown -->
                 <div class="section">
-                    <div class="section-title">Fee Breakdown</div>
+                    <div class="section-title">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        FEE BREAKDOWN
+                    </div>
                     <div class="fee-breakdown">
                         <div class="fee-row">
                             <span class="fee-label">Transaction Amount:</span>
                             <span class="fee-value" id="transactionAmount">0.00 USD</span>
                         </div>
                         <div class="fee-row">
-                            <span class="fee-label">VAT:</span>
-                            <span class="fee-value" id="vatAmount">0.00 USD</span>
+                            <span class="fee-label">External Fees:</span>
+                            <span class="fee-value" id="externalFees">INCLUDED</span>
                         </div>
                         <div class="fee-row">
                             <span class="fee-label">Service Charge:</span>
-                            <span class="fee-value" id="serviceCharge">0.00 USD</span>
+                            <span class="fee-value" id="serviceCharge">INCLUDED</span>
                         </div>
-                        <div class="fee-row" style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 8px; font-weight: 700;">
+                        <div class="fee-row" style="border-top: 1px solid rgba(20, 203, 244, 0.2); padding-top: 10px; margin-top: 8px; font-weight: 700;">
                             <span class="fee-label">Total Amount:</span>
                             <span class="fee-value" id="totalAmount">0.00 USD</span>
                         </div>
@@ -482,7 +537,15 @@
                 <div class="security">
                     <div class="security-item">
                         <i class="fas fa-shield-alt"></i>
-                        <span>Secure Transaction</span>
+                        <span>256-bit Encryption</span>
+                    </div>
+                    <div class="security-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Verified Transaction</span>
+                    </div>
+                    <div class="security-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure Transfer</span>
                     </div>
                 </div>
             </div>
@@ -534,22 +597,6 @@
                 style: 'currency',
                 currency: currency
             }).format(amount);
-        }
-        
-        // Calculate fees based on transaction amount
-        function calculateFees(amount) {
-            const vatRate = 0.075; // 7.5% VAT
-            const serviceChargeRate = 0.015; // 1.5% service charge
-            
-            const vat = amount * vatRate;
-            const serviceCharge = amount * serviceChargeRate;
-            const total = amount + vat + serviceCharge;
-            
-            return {
-                vat: vat,
-                serviceCharge: serviceCharge,
-                total: total
-            };
         }
         
         // Load transaction data
@@ -617,12 +664,11 @@
             document.getElementById('amount').textContent = amount.toFixed(2);
             document.getElementById('currency').textContent = currency;
             
-            // Calculate and display fees
-            const fees = calculateFees(amount);
+            // Display fees as "INCLUDED" instead of calculated values
             document.getElementById('transactionAmount').textContent = formatCurrency(amount, currency);
-            document.getElementById('vatAmount').textContent = formatCurrency(fees.vat, currency);
-            document.getElementById('serviceCharge').textContent = formatCurrency(fees.serviceCharge, currency);
-            document.getElementById('totalAmount').textContent = formatCurrency(fees.total, currency);
+            document.getElementById('externalFees').textContent = 'INCLUDED';
+            document.getElementById('serviceCharge').textContent = 'INCLUDED';
+            document.getElementById('totalAmount').textContent = formatCurrency(amount, currency);
             
             // Show receipt content
             document.getElementById('loadingState').classList.add('hidden');
