@@ -245,6 +245,26 @@
                 opacity: 1;
             }
         }
+        .logo {
+    width: 80px;
+    height: 80px;
+    background: rgba(20, 203, 244, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(20, 203, 244, 0.3);
+    margin: 0 auto 1rem;
+    overflow: hidden;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
     </style>
     <!DOCTYPE html>
 <html lang="en">
@@ -341,9 +361,9 @@
     <!-- Splash Screen -->
     <div class="splash-screen" id="splashScreen">
         <div class="logo-container">
-            <div class="logo">
-                <div class="logo-inner">TW</div>
-            </div>
+                    <div class="logo">
+                        <img src="./image/logo.jpeg" alt="TradeWavee Logo">
+                    </div>
             <h1 class="bank-name">Creda Flux E-Wallet</h1>
             <p class="bank-tagline">Your Secure E-Wallet Solution</p>
         </div>
