@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Receipt - TradeWavee</title>
+    <title>Transaction Receipt - Creda Flux E-Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #40196d; /* Kuda's purple */
-            --secondary-color: #6c2490;
-            --accent-color: #ff6b9d;
+            --primary-color: #0c247; /* Dark Azure */
+            --secondary-color: #0a1d3a;
+            --accent-color: #14cbf4;
             --light-color: #ffffff;
             --dark-bg: #f5f7fa;
             --text-dark: #333333;
             --text-light: #666666;
             --border-color: #e1e5eb;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
         }
         
         body {
@@ -301,18 +304,21 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            background: #e8f5e9;
-            color: #2e7d32;
+        }
+        
+        .status-badge.completed {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
         }
         
         .status-badge.failed {
-            background: #ffebee;
-            color: #c62828;
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
         }
         
         .status-badge.pending {
-            background: #fff3e0;
-            color: #ef6c00;
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
         }
         
         .hidden {
@@ -347,7 +353,7 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(64, 25, 109, 0.3);
+            border: 3px solid rgba(12, 34, 119, 0.3);
             border-top: 3px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -382,13 +388,13 @@
                 <div class="company-info">
                     <div class="logo-container">
                         <!-- Add your logo here -->
-                        <!-- <img src="your-logo.png" alt="TradeWavee Logo" class="logo"> -->
+                        <img src="./image/logo.jpeg" alt="Creda Flux E-Wallet Logo" class="logo">
                         <div class="logo-placeholder">
                             <i class="fas fa-wave-square"></i>
                         </div>
-                    </div>
+                    </div>Creda Flux E-Wallet
                     <div>
-                        <h1 class="company-name">TradeWavee</h1>
+                        <h1 class="company-name">Creda Flux E-Wallet</h1>
                         <p class="tagline">Secure E-Wallet Solution</p>
                     </div>
                 </div>
@@ -429,7 +435,7 @@
                             <div class="party-title">Sender</div>
                             <div class="party-name" id="senderName">-</div>
                             <div class="party-detail" id="senderAccount">Account: -</div>
-                            <div class="party-detail" id="senderBank">Bank: TradeWavee</div>
+                            <div class="party-detail" id="senderBank">Bank: Creda Flux E-Wallet</div>
                         </div>
                         
                         <!-- Receiver -->
@@ -437,7 +443,7 @@
                             <div class="party-title">Receiver</div>
                             <div class="party-name" id="receiverName">-</div>
                             <div class="party-detail" id="receiverAccount">Account: -</div>
-                            <div class="party-detail" id="receiverBank">Bank: TradeWavee</div>
+                            <div class="party-detail" id="receiverBank">Bank: Creda Flux E-Wallet</div>
                         </div>
                     </div>
                 </div>
@@ -484,7 +490,7 @@
             <!-- Footer -->
             <div class="footer">
                 <p class="footer-note">
-                    This is an official receipt from TradeWavee E-Wallet. Please keep it for your records.
+                    This is an official receipt from Creda Flux E-Wallet. Please keep it for your records.
                 </p>
                 <div class="actions">
                     <button onclick="window.print()" class="btn btn-primary">
@@ -588,10 +594,16 @@
             const status = transaction.status || 'Completed';
             statusElement.textContent = status;
             statusElement.className = 'status-badge';
-            if (status.toLowerCase() === 'failed') {
+            
+            // Apply appropriate status class
+            if (status.toLowerCase() === 'completed' || status.toLowerCase() === 'success') {
+                statusElement.classList.add('completed');
+            } else if (status.toLowerCase() === 'failed' || status.toLowerCase() === 'error') {
                 statusElement.classList.add('failed');
             } else if (status.toLowerCase() === 'pending') {
                 statusElement.classList.add('pending');
+            } else {
+                statusElement.classList.add('completed'); // Default to completed
             }
             
             document.getElementById('senderName').textContent = transaction.sender_name || transaction.sender?.name || 'Unknown';
