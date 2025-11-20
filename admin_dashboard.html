@@ -392,6 +392,56 @@
             transform: translateY(-1px);
         }
 
+        /* Fund Management Styles */
+        .fund-action-card {
+            background: rgba(12, 44, 71, 0.3);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(20, 203, 244, 0.2);
+            height: 100%;
+        }
+
+        .btn-success {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ff8c00);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--dark-bg);
+        }
+
+        .btn-success:hover, .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .text-success {
+            color: #14cbf4 !important;
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #14cbf4, #1c77a2) !important;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .admin-header {
@@ -537,10 +587,17 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-exchange-alt"></i>
+                        <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">System Status</div>
+                    <div class="stat-value" id="total-deposits">0</div>
+                    <div class="stat-label">Total Deposits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="stat-value" id="total-withdrawals">0</div>
+                    <div class="stat-label">Total Withdrawals</div>
                 </div>
             </div>
 
@@ -611,6 +668,76 @@
                 </div>
             </div>
 
+            <!-- Fund Management Card -->
+            <div class="create-user-card">
+                <div class="create-user-header">
+                    <h2 class="create-user-title">
+                        <i class="fas fa-money-check-alt"></i>
+                        Fund Management
+                    </h2>
+                </div>
+                <div class="create-user-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="fund-action-card">
+                                <h4 class="text-success mb-3">
+                                    <i class="fas fa-arrow-down me-2"></i>Deposit Funds
+                                </h4>
+                                <form id="deposit-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select User</label>
+                                        <select class="form-select" id="deposit-user" required>
+                                            <option value="">Choose user...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <input type="number" class="form-control" id="deposit-amount" 
+                                               step="0.01" min="0.01" placeholder="0.00" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description (Optional)</label>
+                                        <input type="text" class="form-control" id="deposit-description" 
+                                               placeholder="Deposit reason...">
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-plus-circle me-2"></i>Deposit Funds
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fund-action-card">
+                                <h4 class="text-warning mb-3">
+                                    <i class="fas fa-arrow-up me-2"></i>Withdraw Funds
+                                </h4>
+                                <form id="withdraw-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select User</label>
+                                        <select class="form-select" id="withdraw-user" required>
+                                            <option value="">Choose user...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <input type="number" class="form-control" id="withdraw-amount" 
+                                               step="0.01" min="0.01" placeholder="0.00" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description (Optional)</label>
+                                        <input type="text" class="form-control" id="withdraw-description" 
+                                               placeholder="Withdrawal reason...">
+                                    </div>
+                                    <button type="submit" class="btn btn-warning w-100">
+                                        <i class="fas fa-minus-circle me-2"></i>Withdraw Funds
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Users Table -->
             <div class="users-table-card">
                 <div class="users-table-header">
@@ -640,6 +767,36 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Transactions History Card -->
+            <div class="users-table-card">
+                <div class="users-table-header">
+                    <h2 class="users-table-title">
+                        <i class="fas fa-history"></i>
+                        Admin Transactions History
+                    </h2>
+                </div>
+                <div class="users-table-body">
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>User</th>
+                                    <th>Account</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-table-body">
+                                <!-- Transactions will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -663,8 +820,10 @@ async function checkAuthentication() {
         const data = await response.json();
         
         if (data.success && data.user.is_admin) {
-            // User is authenticated and is admin, load users
+            // User is authenticated and is admin, load all data
             loadUsers();
+            loadUserDropdowns();
+            loadAdminTransactions();
         } else {
             // Redirect to login if not authenticated or not admin
             alert('Access denied. Please log in as administrator.');
@@ -754,6 +913,89 @@ function updateStats(users) {
     
     const totalBalance = users.reduce((sum, user) => sum + user.balance, 0);
     document.getElementById('total-balance').textContent = Math.round(totalBalance).toLocaleString();
+    
+    // For now, we'll set these to 0 - you can update them when you have actual transaction data
+    document.getElementById('total-deposits').textContent = '0';
+    document.getElementById('total-withdrawals').textContent = '0';
+}
+
+// Load users for dropdowns
+async function loadUserDropdowns() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/users`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const depositSelect = document.getElementById('deposit-user');
+            const withdrawSelect = document.getElementById('withdraw-user');
+            
+            depositSelect.innerHTML = '<option value="">Choose user...</option>';
+            withdrawSelect.innerHTML = '<option value="">Choose user...</option>';
+            
+            data.users.forEach(user => {
+                const option = `<option value="${user.id}">${user.name} (${user.account_number}) - ${user.balance} ${user.currency}</option>`;
+                depositSelect.innerHTML += option;
+                withdrawSelect.innerHTML += option;
+            });
+        }
+    } catch (error) {
+        console.error('Error loading user dropdowns:', error);
+    }
+}
+
+// Load admin transactions
+async function loadAdminTransactions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/transactions`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayTransactions(data.transactions);
+        }
+    } catch (error) {
+        console.error('Error loading transactions:', error);
+    }
+}
+
+// Display transactions
+function displayTransactions(transactions) {
+    const tbody = document.getElementById('transactions-table-body');
+    tbody.innerHTML = '';
+    
+    if (transactions.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="fas fa-receipt fa-2x mb-3"></i><br>
+                    No transactions found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    transactions.forEach(transaction => {
+        const row = document.createElement('tr');
+        const typeClass = transaction.type === 'Deposit' ? 'text-success' : 'text-warning';
+        const typeIcon = transaction.type === 'Deposit' ? 'fa-arrow-down' : 'fa-arrow-up';
+        
+        row.innerHTML = `
+            <td><small>${transaction.transaction_id}</small></td>
+            <td><span class="${typeClass}"><i class="fas ${typeIcon} me-1"></i>${transaction.type}</span></td>
+            <td>${transaction.target_user}</td>
+            <td><small>${transaction.target_account}</small></td>
+            <td><strong>${transaction.amount} ${transaction.currency}</strong></td>
+            <td><small>${new Date(transaction.created_at).toLocaleString()}</small></td>
+            <td><span class="badge bg-success">${transaction.status}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
 }
 
 // Create user form
@@ -797,6 +1039,7 @@ document.getElementById('create-user-form').addEventListener('submit', async fun
             alert('User account created successfully!');
             this.reset();
             loadUsers(); // Reload the users list
+            loadUserDropdowns(); // Reload dropdowns
         } else {
             alert('Error: ' + data.message);
         }
@@ -825,6 +1068,7 @@ async function deleteUser(userId, userName) {
         if (data.success) {
             alert('User deleted successfully!');
             loadUsers(); // Reload the users list
+            loadUserDropdowns(); // Reload dropdowns
         } else {
             alert('Error: ' + data.message);
         }
@@ -832,6 +1076,110 @@ async function deleteUser(userId, userName) {
         alert('Error deleting user: ' + error);
     }
 }
+
+// Deposit form handler
+document.getElementById('deposit-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const userId = document.getElementById('deposit-user').value;
+    const amount = parseFloat(document.getElementById('deposit-amount').value);
+    const description = document.getElementById('deposit-description').value;
+    
+    if (!userId || !amount) {
+        alert('Please select a user and enter amount');
+        return;
+    }
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/deposit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_id: userId,
+                amount: amount,
+                description: description
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(data.message);
+            this.reset();
+            loadUsers(); // Reload users to update balances
+            loadUserDropdowns(); // Reload dropdowns with updated balances
+            loadAdminTransactions(); // Reload transaction history
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error processing deposit: ' + error);
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+// Withdraw form handler
+document.getElementById('withdraw-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const userId = document.getElementById('withdraw-user').value;
+    const amount = parseFloat(document.getElementById('withdraw-amount').value);
+    const description = document.getElementById('withdraw-description').value;
+    
+    if (!userId || !amount) {
+        alert('Please select a user and enter amount');
+        return;
+    }
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/withdraw`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_id: userId,
+                amount: amount,
+                description: description
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(data.message);
+            this.reset();
+            loadUsers(); // Reload users to update balances
+            loadUserDropdowns(); // Reload dropdowns with updated balances
+            loadAdminTransactions(); // Reload transaction history
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error processing withdrawal: ' + error);
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+});
 
 // Logout
 document.getElementById('logout-btn').addEventListener('click', async function(e) {
